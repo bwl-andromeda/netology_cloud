@@ -9,7 +9,7 @@ export const initialUsersState = {
 export const signUp = createAsyncThunk(
   "auth/signUp",
   async ({ username, password }) => {
-    const response = await fetch(`/register/`, {
+    const response = await fetch(`http://89.111.169.86/register/`, {
       credentials: "include",
       method: "POST",
       headers: {
@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }) => {
     try {
-      const response = await fetch(`/login/`, {
+      const response = await fetch(`http://89.111.169.86/login/`, {
         credentials: "include",
         method: "POST",
         headers: {
@@ -82,7 +82,7 @@ export const checkUser = createAsyncThunk("auth/checkUser", async () => {
 });
 
 export const logout = createAsyncThunk("auth/logout", async () => {
-  const response = await fetch(`/logout/`, {
+  const response = await fetch(`http://89.111.169.86/logout/`, {
     credentials: "include",
     method: "GET",
     headers: {
@@ -102,7 +102,7 @@ export const changeUsername = createAsyncThunk(
   "auth/changeUsername",
   async ({ newUsername }) => {
     const response = await fetch(
-      `/api/users/${JSON.parse(sessionStorage.getItem("user")).id}/`,
+      `http://89.111.169.86/api/users/${JSON.parse(sessionStorage.getItem("user")).id}/`,
       {
         credentials: "include",
         method: "PATCH",
@@ -125,7 +125,7 @@ export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async ({ newPassword }) => {
     await fetch(
-      `/api/users/${JSON.parse(sessionStorage.getItem("user")).id}/`,
+      `http://89.111.169.86/api/users/${JSON.parse(sessionStorage.getItem("user")).id}/`,
       {
         credentials: "include",
         method: "PATCH",

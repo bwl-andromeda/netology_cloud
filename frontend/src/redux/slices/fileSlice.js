@@ -11,18 +11,21 @@ export const editFile = createAsyncThunk(
   "file/editFile",
   async ({ fileId, newFilename, newDescription }) => {
     try {
-      const response = await fetch(`/api/files/${fileId}/`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Token " + JSON.parse(sessionStorage.getItem("user")).token,
+      const response = await fetch(
+        `http://89.111.169.86/api/files/${fileId}/`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Token " + JSON.parse(sessionStorage.getItem("user")).token,
+          },
+          body: JSON.stringify({
+            filename: newFilename,
+            description: newDescription,
+          }),
         },
-        body: JSON.stringify({
-          filename: newFilename,
-          description: newDescription,
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -41,7 +44,7 @@ export const loadFiles = createAsyncThunk("file/loadFiles", async () => {
   }
 
   try {
-    const response = await fetch(`/api/files/`, {
+    const response = await fetch(`http://89.111.169.86/api/files/`, {
       credentials: "include",
       method: "GET",
       headers: {
@@ -65,7 +68,7 @@ export const deleteFile = createAsyncThunk(
   "file/deleteFile",
   async (fileId) => {
     try {
-      const response = await fetch(`/api/files/${fileId}`, {
+      const response = await fetch(`http://89.111.169.86/api/files/${fileId}`, {
         credentials: "include",
         headers: {
           Authorization:
@@ -87,7 +90,7 @@ export const downloadFile = createAsyncThunk(
   "file/downloadFile",
   async (fileId) => {
     try {
-      const response = await fetch(`/api/files/${fileId}`, {
+      const response = await fetch(`http://89.111.169.86/api/files/${fileId}`, {
         credentials: "include",
         method: "GET",
         headers: {
@@ -125,7 +128,7 @@ export const uploadFile = createAsyncThunk(
   "file/uploadFile",
   async (formData) => {
     try {
-      const response = await fetch(`/api/files/`, {
+      const response = await fetch(`http://89.111.169.86/api/files/`, {
         headers: {
           Authorization:
             "Token " + JSON.parse(sessionStorage.getItem("user")).token,

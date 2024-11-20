@@ -12,7 +12,7 @@ export const initialAdminState = {
 };
 
 export const loadUsers = createAsyncThunk("admin/loadUsers", async () => {
-  const response = await fetch(`/api/users/`, {
+  const response = await fetch(`http://89.111.169.86/api/users/`, {
     credentials: "include",
     method: "GET",
     headers: {
@@ -33,7 +33,7 @@ export const loadUsers = createAsyncThunk("admin/loadUsers", async () => {
 export const createUser = createAsyncThunk(
   "admin/createUser",
   async ({ username, password, is_staff }) => {
-    const response = await fetch(`/api/users/`, {
+    const response = await fetch(`http://89.111.169.86/api/users/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const createUser = createAsyncThunk(
 export const editUser = createAsyncThunk(
   "admin/editUser",
   async ({ userId, newUsername, isStaff }) => {
-    const response = await fetch(`/api/users/${userId}/`, {
+    const response = await fetch(`http://89.111.169.86/api/users/${userId}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export const editUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
   "admin/deleteUser",
   async (userId) => {
-    const response = await fetch(`/api/users/${userId}/`, {
+    const response = await fetch(`http://89.111.169.86/api/users/${userId}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
