@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-
 export const initialFileState = {
   files: [],
   loading: false,
@@ -8,97 +7,93 @@ export const initialFileState = {
   success: null,
 };
 
-
 export const editFile = createAsyncThunk(
-  'file/editFile',
+  "file/editFile",
   async ({ fileId, newFilename, newDescription }) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}/`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/files/${fileId}/`, {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+          "Content-Type": "application/json",
+          Authorization:
+            "Token " + JSON.parse(sessionStorage.getItem("user")).token,
         },
-        body: JSON.stringify({ filename: newFilename, description: newDescription }),
+        body: JSON.stringify({
+          filename: newFilename,
+          description: newDescription,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  },
 );
 
+export const loadFiles = createAsyncThunk("file/loadFiles", async () => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
-export const loadFiles = createAsyncThunk(
-  "file/loadFiles",
-  async () => {
-    const user = JSON.parse(sessionStorage.getItem('user'));
+  if (!user) {
+    throw new Error("No token found");
+  }
 
-    if (!user) {
-      throw new Error("No token found");
+  try {
+    const response = await fetch(`/api/files/`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Token " + user.token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
 
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+export const deleteFile = createAsyncThunk(
+  "file/deleteFile",
+  async (fileId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/`, {
-        credentials: 'include',
+      const response = await fetch(`/api/files/${fileId}`, {
+        credentials: "include",
+        headers: {
+          Authorization:
+            "Token " + JSON.parse(sessionStorage.getItem("user")).token,
+        },
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
+);
+
+export const downloadFile = createAsyncThunk(
+  "file/downloadFile",
+  async (fileId) => {
+    try {
+      const response = await fetch(`/api/files/${fileId}`, {
+        credentials: "include",
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Token " + user.token,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      return data;
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-);
-
-
-export const deleteFile = createAsyncThunk(
-  'file/deleteFile',
-  async (fileId) => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}`, {
-        credentials: 'include',
-        headers: {
-          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token
-        },
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-);
-
-
-export const downloadFile = createAsyncThunk(
-  'file/downloadFile',
-  async (fileId) => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}`, {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Token " + JSON.parse(sessionStorage.getItem('user')).token,
+          Authorization:
+            "Token " + JSON.parse(sessionStorage.getItem("user")).token,
         },
       });
 
@@ -108,47 +103,44 @@ export const downloadFile = createAsyncThunk(
 
       if (!fileResponse.ok) {
         const errorMessage = await fileResponse.text();
-        console.error('File response error:', errorMessage);
+        console.error("File response error:", errorMessage);
         throw new Error("Network response was not ok");
       }
 
       const data = await fileResponse.blob();
       const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
 
       link.href = url;
-      link.setAttribute('download', fileData.filename);
+      link.setAttribute("download", fileData.filename);
       document.body.appendChild(link);
       link.click();
-
-
     } catch (error) {
       console.error(error);
     }
-  }
+  },
 );
 
-
 export const uploadFile = createAsyncThunk(
-  'file/uploadFile',
+  "file/uploadFile",
   async (formData) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/`, {
+      const response = await fetch(`/api/files/`, {
         headers: {
-          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+          Authorization:
+            "Token " + JSON.parse(sessionStorage.getItem("user")).token,
         },
-        method: 'POST',
-        body: formData
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  },
 );
 
 export const fileSliceActions = {
@@ -156,7 +148,7 @@ export const fileSliceActions = {
 };
 
 const fileSlice = createSlice({
-  name: 'file',
+  name: "file",
   initialState: initialFileState,
   reducers: {},
   extraReducers: (builder) => {
@@ -170,7 +162,7 @@ const fileSlice = createSlice({
     });
     builder.addCase(loadFiles.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message || 'Failed to load files';
+      state.error = action.error.message || "Failed to load files";
     });
     builder.addCase(editFile.fulfilled, (state, action) => {
       state.success = true;
@@ -178,19 +170,19 @@ const fileSlice = createSlice({
     });
     builder.addCase(editFile.rejected, (state, action) => {
       state.success = false;
-      state.error = action.error.message || 'File renaming failed';
+      state.error = action.error.message || "File renaming failed";
     });
     builder.addCase(deleteFile.rejected, (state, action) => {
       state.success = false;
-      state.error = action.error.message || 'File deletion failed';
+      state.error = action.error.message || "File deletion failed";
     });
     builder.addCase(downloadFile.rejected, (state, action) => {
       state.success = false;
-      state.error = action.error.message || 'File download failed';
+      state.error = action.error.message || "File download failed";
     });
     builder.addCase(uploadFile.rejected, (state, action) => {
       state.success = false;
-      state.error = action.error.message || 'File upload failed';
+      state.error = action.error.message || "File upload failed";
     });
   },
 });
