@@ -2,6 +2,7 @@ FROM node:18-alpine AS frontend-build
 
 WORKDIR /app
 COPY package*.json ./
+COPY .env ./
 RUN npm install
 
 COPY src/ ./src/
